@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
+    // https://www.youtube.com/watch?v=muAzcpAg3lg
     public Animator Animator;
 
     [SerializeField] private float walkSpeed = 3f;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     private float _verticalRotation;
     private Vector3 currentMovement = Vector3.zero;
     private bool isDancing = false;
+    private bool isMoving = false;
 
     private void Awake()
     {
@@ -50,10 +52,14 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     private void Movement()
     {
-        Animator.SetFloat("Velocity", _direction.magnitude);
+        //Animator.SetFloat("Velocity", _direction.magnitude);
+
+        isMoving = _direction.magnitude > 0;
+        Animator.SetFloat("Velocity", isMoving ? walkSpeed * _speedMultiplier : 0);
 
         float verticalSpeed = _direction.y * walkSpeed * _speedMultiplier;
         float horizontalSpeed = _direction.x * walkSpeed * _speedMultiplier;
+
 
         Vector3 horizontalMovement = new Vector3(horizontalSpeed, 0, verticalSpeed);
         horizontalMovement = transform.rotation * horizontalMovement;
@@ -102,21 +108,22 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         _speedMultiplier = context.ReadValue<float>() > 0 ? sprintMultiplier : 1f;
 
-        if (context.started)
+        /*if (context.started)
         {
             Animator.SetBool("Sprint", true);
         }
         else if (context.canceled)
         {
             Animator.SetBool("Sprint", false);
-        }
+        }*/
     }
 
     public void OnDance(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            isDancing = !isDancing;
+            isDancing = !isMoving && !isDancing;
+
             Animator.SetBool("Dance", isDancing);
         }
     }
