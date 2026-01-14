@@ -1,6 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController), typeof(PlayerInputs))]
 public class Prayer : MonoBehaviour
 {
     [SerializeField] private CharacterController _characterController;
@@ -11,7 +12,7 @@ public class Prayer : MonoBehaviour
 
     public float lookSensitivityH = 0.1f;
     public float lookSensitivityV = 0.1f;
-    public float looklimitV = 80.0f;
+    public float lookLimitV = 80.0f;
 
     private PlayerInputs _playerInputs;
     private Vector3 _currentMovement = Vector3.zero;
@@ -31,7 +32,6 @@ public class Prayer : MonoBehaviour
     private void Movement()
     {
         Vector3 moveDirection = new Vector3(_playerInputs.MoveInput.x, 0, _playerInputs.MoveInput.y);
-        //moveDirection = transform.TransformDirection(moveDirection);
 
         _currentMovement = _playerInputs.SprintInput ? moveDirection * sprintSpeed : moveDirection * walkSpeed;
 
@@ -42,7 +42,8 @@ public class Prayer : MonoBehaviour
     {
         _cameraRotation.x += _playerInputs.LookInput.x * lookSensitivityH;
         _cameraRotation.y -= _playerInputs.LookInput.y * lookSensitivityV;
-        _cameraRotation.y = Mathf.Clamp(_cameraRotation.y, -looklimitV, looklimitV);
+        _cameraRotation.y = Mathf.Clamp(_cameraRotation.y, -lookLimitV, lookLimitV);
+
         transform.rotation = Quaternion.Euler(0, _cameraRotation.x, 0);
         _playerCamera.transform.localRotation = Quaternion.Euler(_cameraRotation.y, 0, 0);
     }

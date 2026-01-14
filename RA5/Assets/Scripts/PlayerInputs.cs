@@ -27,7 +27,7 @@ public class PlayerInputs : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public void OnDance(InputAction.CallbackContext context)
